@@ -15,10 +15,13 @@ public class Program
     {
         Print("Welcome Adventurer", ConsoleColor.Green);
         Print("whats your name? ", ConsoleColor.White, false);
-        string name = Console.ReadLine();
-        Print("welcome " + name);
+        
+        string playerName = Console.ReadLine();
         Player player = new Player(playerName);
         Print($"You are {player.Name} with {player.Health} HP and {player.Attack} Attack.", ConsoleColor.Yellow);
+
+        Enemy enemy = new Enemy("Goblin", 50, 8);
+        Print($"A {enemy.Name} appears! It has {enemy.Health} HP and {enemy.Attack} Attack.", ConsoleColor.Red);
 
     }
 
@@ -54,7 +57,7 @@ class Player
     public void TakeDamage(int damage)
     {
         Health -= damage;
-        if (Health < 0) Health = 0; // Zorgt dat health niet negatief wordt
+        if (Health < 0) Health = 0;
     }
 
 
@@ -76,7 +79,7 @@ class Enemy
     public void TakeDamage(int damage)
     {
         Health -= damage;
-        if (Health < 0) Health = 0; // Zorgt dat health niet negatief wordt
+        if (Health < 0) Health = 0;
     }
 
 }
