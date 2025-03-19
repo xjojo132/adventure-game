@@ -5,144 +5,135 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 
-
-
-public class Program
+namespace adventure_game
 {
-    static void Main()
+
+
+    public class Program
     {
-        Print("Welcome Adventurer", ConsoleColor.Green);
-        Print("whats your name? ", ConsoleColor.White, false);
-        
-
-        string playerName = Console.ReadLine();
-        Player player = new Player(playerName, 100 , 10);
-        Print($"You are {player.Name} with {player.Health} HP and {player.Attack} Attack.", ConsoleColor.Yellow);
-        
-
-        List<string> enemyNames = new List<string> { "Goblin", "Orc", "Troll", "Bandit", "Skeleton" };
-        Random rand = new Random();
-        string randomEnemyName = enemyNames[rand.Next(enemyNames.Count)];
-        Enemy enemy = new Enemy(randomEnemyName, 50 , 8);
-        
-
-        Print($"A {enemy.Name} appears! It has {enemy.Health} HP and {enemy.Attack} Attack.", ConsoleColor.Red);
-
-
-        bool gameOver = false;
-       
-
-        while (!gameOver)
+        static void Main()
         {
-            Print("What will you do? ([A]ttack / [Q]uit)", ConsoleColor.White);
-            string action = Console.ReadLine().ToLower();
+            int turn = 1;
+            bool gameOver = false;
+            Random rand = new Random();
+
+            List<string> enemyNames = new List<string> { "Goblin", "Orc", "Troll", "Bandit", "Skeleton" };
 
 
-            if (action == "q")
+            Print("Welcome Adventurer", ConsoleColor.White);
+            Print("whats your name? ", ConsoleColor.White, false);
+            string playerName = Console.ReadLine();
+            Player player = new Player(playerName);
+            Print($"You are {player.Name} with {player.Health} HP, {player.healPotion} Health potions and {player.Attack} Attack power.", ConsoleColor.Yellow);
+            Print($"You are {player.level} level", ConsoleColor.Yellow);
+            Print($"You have {player.Health} HP", ConsoleColor.Yellow);
+            Print($"You have {player.healPotion} Health potions ", ConsoleColor.Yellow);
+            Print($"You have {player.Attack} Attack power \n", ConsoleColor.Yellow);
+            Print($"its turn {turn} \n");
+            turn++;
+            Print("What will you do? ([A]ttack / [H]eal / [Q]uit)", ConsoleColor.Blue);
+
+
+            Enemy enemy = null;
+             
+
+            while (!gameOver)
             {
-                Print("You have quit the game. Goodbye!", ConsoleColor.DarkGray);
-                Environment.Exit(0);
-            }
 
-
-            if (action == "a")
-            {
-                int playerDamage = rand.Next(5, player.Attack);
-                enemy.TakeDamage(playerDamage);
-                Print($"You hit the {enemy.Name} for {playerDamage} damage!", ConsoleColor.Green);
-
-                if (enemy.Health == 0)
+                if(enemy == null || enemy.Health <= 0)
                 {
-                    Print($"The {enemy.Name} has been defeated!", ConsoleColor.White);
-                    gameOver = true;
-                    continue;
+                    string randomEnemyName = enemyNames[rand.Next(enemyNames.Count)];
+                    enemy = new Enemy(randomEnemyName, rand.Next(30, 60), rand.Next(5, 15));
+                    //int enemyMaxHealth = enemy.Health;
+                    int xpGain = enemy.Health + enemy.Attack;
                 }
 
-                int enemyDamage = rand.Next(3, enemy.Attack);
-                player.TakeDamage(enemyDamage);
-                Print($"The {enemy.Name} strikes back for {enemyDamage} damage!", ConsoleColor.Red);
+               
+                string action = Console.ReadLine().ToLower();
+                Console.Clear();
+                Print($"You are {player.level} level", ConsoleColor.Yellow);
+                Print($"You have {player.Health} HP", ConsoleColor.Yellow);
+                Print($"You have {player.healPotion} Health potions ", ConsoleColor.Yellow);
+                Print($"its turn {player.Xp}");
+                Print($"You have {player.Attack} Attack power \n", ConsoleColor.Yellow);
+                Print($"its turn {turn} \n");
+                turn++;
+                Print($"A {enemy.Name} appears! It has {enemy.Health} HP and {enemy.Attack} Attack.", ConsoleColor.Red);
+                Print("What will you do? ([A]ttack / [H]eal / [Q]uit)", ConsoleColor.Blue);
 
-
-                if (player.Health == 0)
+                if (action == "q")
                 {
-                    Print($"You have been defeated by the {enemy.Name}!", ConsoleColor.Red);
-                    gameOver = true;
+                    Print("You have quit the game. Goodbye!", ConsoleColor.DarkGray);
+                    Environment.Exit(0);
                 }
+                else if (action == "a")
+                {
+
+                    //je eigen turn 
+                    enemy.TakeDamage(player.Attack);
+                    Print($"you swung your sword at the {enemy.Name} for {player.Attack} damage!", ConsoleColor.DarkGreen);
+                    Print($"The {enemy.Name} has {enemy.Health} HP left.", ConsoleColor.Red);
+
+                    if (enemy.Health <= 0)
+                    {
+
+                        Print($"The {enemy.Name} has been defeated!", ConsoleColor.White);
+                        player.healPotion += 1;
+                        player.GainXp(enemy.maxHealth + enemy.Attack);
+                        enemy = null;
+                        continue;
+                    }
+
+                    //enemy turn
+                    player.TakeDamage(enemy.Attack);
+                    Print($"The {enemy.Name} strikes back for {enemy.Attack} damage!", ConsoleColor.Red);
+                    Print($"You have {player.Health} HP left.", ConsoleColor.Green);
+
+                    if (player.Health == 0)
+                    {
+                        Print($"You have been defeated by the {enemy.Name}!", ConsoleColor.DarkRed);
+                        gameOver = true;
+                    }
+
+                }
+                else if (action == "h")
+                {
+                    player.Heal();
+                    Print($"You have healed yourself for 15 HP.", ConsoleColor.Green);
+                    Print($"You have {player.healPotion} health potions left.", ConsoleColor.Green);
+
+                }
+                else
+                {
+                    Print("Invalid command", ConsoleColor.Red);
+                }
+               
+
             }
 
+        }
+
+        public static void Print(string message, ConsoleColor color = ConsoleColor.White, bool newLine = true)
+        {
+            Console.ForegroundColor = color;
+            if (newLine)
+            {
+                Console.WriteLine(message);
+            }
             else
             {
-                Print("Invalid command", ConsoleColor.Red);
+                Console.Write(message);
             }
+            Console.ResetColor();
         }
 
     }
-
-    static void Print(string message, ConsoleColor color = ConsoleColor.White, bool newLine = true)
-    {
-        Console.ForegroundColor = color;
-        if (newLine)
-        {
-            Console.WriteLine(message);
-        }
-        else
-        { 
-            Console.Write(message);
-        }
-        Console.ResetColor();
-    }
-
- }
-
-
-
-class Player
-{
-    public string Name { get; private set; }
-    public int Health { get; private set; }
-    public int Attack { get; private set; }
-
-    public Player(string name, int health, int attack)
-    {
-        Name = name;
-        Health = health;
-        Attack = attack;
-
-    }
-
-
-
-    public void TakeDamage(int damage)
-    {
-        Health -= damage;
-        if (Health < 0) Health = 0;
-    }
-
-
 }
 
-class Enemy
-{
-    public string Name { get; private set; }
-    public int Health { get; private set; }
-    public int Attack { get; private set; }
-
-    public Enemy(string name, int health, int attack)
-    {
-        Name = name;
-        Health = health;
-        Attack = attack;
-    }
-
-    public void TakeDamage(int damage)
-    {
-        Health -= damage;
-        if (Health < 0) Health = 0;
-    }
+    
 
 
 
-
-}
