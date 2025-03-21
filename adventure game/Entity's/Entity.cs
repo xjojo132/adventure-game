@@ -10,7 +10,7 @@ namespace adventure_game
     {
         public string Name { get; private set; }
         public int Health { get; protected set; }
-        public int Attack { get; protected set; }
+        public int AttackPower { get; protected set; }
         public int maxHealth { get; set; }
 
         // Constructor voor de naam, health en attack
@@ -18,14 +18,19 @@ namespace adventure_game
         {
             Name = name;
             Health = health;
-            Attack = attack;
+            AttackPower = attack;
             maxHealth = health;
         }
 
-        public void TakeDamage(int damage)
+        public virtual void TakeDamage(int damage)
         {
             Health -= damage;
             if (Health < 0) Health = 0;
+        }
+
+        public virtual void Attack(Entity target)
+        {
+            target.TakeDamage(AttackPower);
         }
     }
 }
