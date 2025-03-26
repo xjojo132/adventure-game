@@ -20,7 +20,7 @@ namespace adventure_game
         private double criticalMultiplier = 2; 
 
         public int healPotion = 3;
-        public int healPotionGain = 15;
+        public int healPotionGain = 20;
 
         public Player(string name) : base(name, 100, 10, 15) 
         {
