@@ -11,13 +11,13 @@ namespace adventure_game
     {
 
 
-        public Enemy(string name, int health, int attack) : base(name, health, attack) { }
+        public Enemy(string name, int health, int attack, int speed) : base(name, health, attack, speed) { }
         
             
             public override void Attack(Entity target)
             {
-                ConWrite.Print($"{Name} attacks for {AttackPower} damage!", ConsoleColor.Red);
-                target.TakeDamage(AttackPower);
+                ConWrite.Print($"{name} attacks for {attackPower} damage! \n you now have {target.health} health left", ConsoleColor.Red);
+                target.TakeDamage(attackPower);
             }
 
     }

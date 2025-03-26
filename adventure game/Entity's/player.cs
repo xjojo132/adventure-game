@@ -22,7 +22,7 @@ namespace adventure_game
         public int healPotion = 3;
         public int healPotionGain = 15;
 
-        public Player(string name) : base(name, 100, 10) 
+        public Player(string name) : base(name, 100, 10, 15) 
         {
             level = 1;
             Xp = 0;
@@ -32,7 +32,7 @@ namespace adventure_game
         public override void Attack(Entity target)
         {
             Random rand = new Random();
-            int damage = AttackPower;
+            int damage = attackPower;
 
             if (rand.NextDouble() < criticalRate)
             {
@@ -42,7 +42,7 @@ namespace adventure_game
 
             }
 
-            ConWrite.Print($"{Name} attacks {target.Name} for {damage} damage!", ConsoleColor.Green);
+            ConWrite.Print($"{name} attacks {target.name} for {damage} damage!", ConsoleColor.Green);
             target.TakeDamage(damage);
 
         }
@@ -51,10 +51,10 @@ namespace adventure_game
         {
             if (healPotion > 0)
             {
-                Health += healPotionGain;
-                if (Health >= maxHealth)
+                health += healPotionGain;
+                if (health >= maxHealth)
                 {
-                    Health = maxHealth;
+                    health = maxHealth;
                 }
                 healPotion--;
             }
@@ -82,8 +82,11 @@ namespace adventure_game
             Xp -= xpToNextLevel;
             xpToNextLevel += 50;
             maxHealth = maxHealth + 20;
-            Health = maxHealth;
-            AttackPower += 5;
+            health = maxHealth;
+            attackPower += 5;
+            healPotionGain += 1;
+            speed += 1;
+            criticalMultiplier += 0.1;
             healPotionGain += 5;
             ConWrite.Print($"You leveled up! You are now level {level}!");
             ConWrite.Print($"You Gained 20 max health and +5 attack power!");

@@ -8,7 +8,6 @@ namespace adventure_game
 {
     class ConWrite
     {
-
         public static void Print(string message, ConsoleColor color = ConsoleColor.White, bool newLine = true)
         {
             Console.ForegroundColor = color;

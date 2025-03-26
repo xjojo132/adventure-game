@@ -10,7 +10,7 @@ namespace adventure_game
     {
         private int armorValue;
 
-        public TankEnemy(string name, int health, int attack, int armor) : base(name, health, attack)
+        public TankEnemy(string name, int health, int attack,int speed, int armor) : base(name, health, attack, speed)
         {
             this.armorValue = armor;
         }
@@ -19,7 +19,7 @@ namespace adventure_game
         {
             int reducedDamage = Math.Max(damage - armorValue, 0);
             base.TakeDamage(reducedDamage);
-            ConWrite.Print($"{Name} absorbs {reducedDamage} damage! due to its heavy armor", ConsoleColor.Red);
+            ConWrite.Print($"{name} absorbs {armorValue} damage! due to its heavy armor", ConsoleColor.Red);
         }
 
     }

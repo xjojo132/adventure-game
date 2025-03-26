@@ -7,23 +7,27 @@ using System.Threading.Tasks;
 namespace adventure_game
 {
     class BlitzEnemy : Enemy
+
     {
-        private double extraAttackChance;
-        public BlitzEnemy(string name, int health, int attack, double extraAttackChance) : base(name, health, attack)
+        private int chance = 90;
+        
+        
+        public BlitzEnemy(string name, int health, int attack, int speed) : base(name, health, attack, speed)
         {
-            this.extraAttackChance = extraAttackChance;
+            
         }
 
         public override void Attack(Entity target)
         {
-            Random rand = new Random();
-            do
+            target.TakeDamage(attackPower);
+            ConWrite.Print($"The {name} strikes back for {attackPower} damage!  \n you now have {target.health} health left", ConsoleColor.Red);
+            int random = new Random().Next(100);
+            if (chance >= random)
             {
-                ConWrite.Print($"{Name} attacks for {AttackPower} damage!", ConsoleColor.Red);
-                target.TakeDamage(AttackPower);
-                extraAttackChance *= 0.75;
+                target.TakeDamage(attackPower);
+                ConWrite.Print($"The {name} is super fast and strikes again for {attackPower} damage!  \n you now have {target.health} health left", ConsoleColor.Red);
+                chance /= 2;
             }
-            while (rand.NextDouble() < extraAttackChance);
         }
     }
 }
