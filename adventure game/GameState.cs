@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace adventure_game
 {
-    class GameState
-    {
-        public enum gameState
+   
+        public enum GameState
         {
             COMBAT,
             STORY,
             GAMEOVER
         }
-    }
+   
 }

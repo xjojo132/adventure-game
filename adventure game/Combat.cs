@@ -9,18 +9,19 @@ namespace adventure_game
 {
     class Combat
     {
+        public string playerDies { get; set;}
 
-        public static void StartCombat(Player player, List<Entity> entityList) 
+        public static void StartCombat(Player player, List<Entity> entityList, ref GameState gameState) 
         {
             genEnemy(3, entityList);
             foreach (var entity in entityList)
             {
                 Console.WriteLine($"{entity.name} joined the battle!");
             }
-            CombatLoop(player, entityList);
+            CombatLoop(player, entityList,ref gameState);
         }
 
-        private static void CombatLoop(Player player, List<Entity> entityList)
+        private static void CombatLoop(Player player, List<Entity> entityList,ref GameState gameState)
         {
 
             while (entityList.Any(e => e is Player) && entityList.Any(e => e is Enemy))
@@ -29,6 +30,8 @@ namespace adventure_game
                 //Console.Clear();
                 PlayerStats(player);
                 CombatSetup(entityList);
+
+                List<Entity> entitiesToRemove = new List<Entity>();
 
                 foreach (var entity in entityList)
                 {
@@ -62,7 +65,7 @@ namespace adventure_game
                             if (target.health <= 0)
                             {
                                 Console.WriteLine($"{target.name} has been defeated!");
-                                entityList.Remove(target);
+                                entitiesToRemove.Add(target);
                             }
                         }
 
@@ -88,11 +91,24 @@ namespace adventure_game
                     {
                         Player target = entityList.OfType<Player>().FirstOrDefault();
                         enemy.Attack(target);
-
+                        if (target.health <= 0)
+                        {
+                            //ConWrite.Print("You have been defeated!", ConsoleColor.DarkRed);
+                            entitiesToRemove.Add(target);
+                            //gameState = GameState.GAMEOVER = true;
+                        }
 
                     }
                 }
-
+                foreach (var entity in entitiesToRemove)
+                {
+                    entityList.Remove(entity);
+                }
+                if (player.health <= 0)
+                {
+                    ConWrite.Print("You have been defeated!", ConsoleColor.DarkRed);
+                    gameState = GameState.GAMEOVER;
+                }
             }
 
         }

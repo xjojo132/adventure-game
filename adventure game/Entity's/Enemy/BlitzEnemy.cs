@@ -9,7 +9,7 @@ namespace adventure_game
     class BlitzEnemy : Enemy
 
     {
-        private int chance = 90;
+        private int chance = 50;
         
         
         public BlitzEnemy(string name, int health, int attack, int speed) : base(name, health, attack, speed)
